@@ -12,7 +12,7 @@ ENV ASTERISK_INST_GUI="no"
 
 ADD data/* /tmp/build/
 
-RUN chmod +x /tmp/build/setup.sh /tmp/build/entry.sh
+RUN chmod +x /tmp/build/setup.sh /tmp/build/entry.sh /tmp/build/menuselect.sh
 RUN /tmp/build/setup.sh
 
 EXPOSE 5060/tcp 5060/udp
