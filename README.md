@@ -13,14 +13,18 @@ You can use:
 docker exec -it [name-of-asterisk-container] /usr/sbin/rasterisk
 to connect to the CLI of Asterisk
 
-# ENVIREMENT Variablen
+# Default ENVIREMENT Variablen
 - ASTERISK_UID='9009'
 - ASTERISK_GID='9009'
 - ASTERISK_USER='asterisk'
 - ASTERISK_GROUP='asterisk'
 - ASTERISK_TZ='Europe/Berlin'
-- ASTERISK_EXTRA_LANG="de"
-- ASTERISK_INST_GUI="yes"
+- ASTERISK_VER='13.16.0-rc2'
+- ASTERISK_DEVEL='no'
+- ASTERISK_EXTRA_LANG='de'
+- ASTERISK_EXTRA_PJSIP='no'
+- ASTERISK_EXTRA_OPUS='1.1.4'
+- ASTERISK_INST_GUI='no'
 
 # Ports:
 - 5060/tcp        # xxx
@@ -33,9 +37,6 @@ to connect to the CLI of Asterisk
 - /etc/asterisk
 - /var/lib/asterisk
 - /var/log/asterisk
-
-# TODO:
-Create a better usage
 
 # Build Log:
 You can find the build Logfile at /tmp/build.log
