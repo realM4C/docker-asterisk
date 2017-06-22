@@ -130,6 +130,7 @@ function __f2b(){
 function __cleanup(){
 	echo "#################################################################"
 	echo "# Clean up everthing and everywhere....                         #"
+	cp /tmp/build/entry.sh / >> /tmp/build.log 2>&1
 	apt-get remove --purge ${PKGP} ${PKG_BUILD} ${PKG_DEV} >> /tmp/build.log 2>&1
 	apt-get autoremove ${PKGP} >> /tmp/build.log 2>&1
 	apt-get clean ${PKGP} >> /tmp/build.log 2>&1
