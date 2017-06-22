@@ -42,9 +42,9 @@ function __download(){
 	if [ "x${ASTERISK_EXTRA_PJSIP}" != "xno" ]; then
 		echo "# Downloading PJSIP in Version ${ASTERISK_EXTRA_PJSIP}..."
 		echo "########  PJSIP  ########" >> /tmp/build.log 2>&1
-		wget -nv -O /tmp/build/pjproject.tar.bz2 http://www.pjsip.org/release/${ASTERISK_EXTRA_PJSIP}/pjproject-${ASTERISK_EXTRA_PJSIP}.tar.bz2 >> /tmp/build.log 2>&1
+		wget -nv -O pjproject.tar.bz2 http://www.pjsip.org/release/${ASTERISK_EXTRA_PJSIP}/pjproject-${ASTERISK_EXTRA_PJSIP}.tar.bz2 >> /tmp/build.log 2>&1
 		mkdir -p /tmp/build/pjproject >> /tmp/build.log 2>&1
-		tar xjvf /tmp/build/pjproject.tar.bz2 -C /tmp/build/pjproject --strip-components=1 >> /tmp/build.log 2>&1
+		tar xjvf pjproject.tar.bz2 -C ./pjproject --strip-components=1 >> /tmp/build.log 2>&1
 		rm pjproject.tar.bz2 >> /tmp/build.log 2>&1
 	fi
 	if [ "x${ASTERISK_EXTRA_OPUS}" != "xno" ]; then
@@ -89,9 +89,9 @@ function __build(){
 	cd asterisk
 	./bootstrap.sh >> /tmp/build.log 2>&1
 	sh contrib/scripts/get_mp3_source.sh >> /tmp/build.log 2>&1
-	mv /tmp/build/asterisk/contrib/scripts/install_prereq /tmp/build/asterisk/contrib/scripts/install_prereq.orig
-	sed 's/libvpb\-dev//g' /tmp/build/asterisk/contrib/scripts/install_prereq.orig > /tmp/build/asterisk/contrib/scripts/install_prereq
-	chmod +x /tmp/build/asterisk/contrib/scripts/install_prereq
+	mv contrib/scripts/install_prereq contrib/scripts/install_prereq.orig
+	sed 's/libvpb\-dev//g' contrib/scripts/install_prereq.orig > contrib/scripts/install_prereq
+	chmod +x contrib/scripts/install_prereq
 	sh contrib/scripts/install_prereq install >> /tmp/build.log 2>&1
 	./configure --with-crypto --with-ssl --with-pjproject-bundled --with-resample --libdir=/usr/lib/x86_64-linux-gnu >> /tmp/build.log 2>&1
 	make menuselect.makeopts >> /tmp/build.log 2>&1
