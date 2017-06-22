@@ -87,10 +87,10 @@ function __build(){
 	cd asterisk
 	./bootstrap.sh >> /tmp/build.log 2>&1
 	sh contrib/scripts/get_mp3_source.sh >> /tmp/build.log 2>&1
-	mv contrib/scripts/install_prereq contrib/scripts/install_prereq.orig
-	sed 's/libvpb\-dev//g' contrib/scripts/install_prereq.orig > contrib/scripts/install_prereq
-	chmod +x contrib/scripts/install_prereq
-	sh contrib/scripts/install_prereq install-unpackaged >> /tmp/build.log 2>&1
+	mv /tmp/build/asterisk/contrib/scripts/install_prereq /tmp/build/asterisk/contrib/scripts/install_prereq.orig
+	sed 's/libvpb\-dev//g' /tmp/build/asterisk/contrib/scripts/install_prereq.orig > /tmp/build/asterisk/contrib/scripts/install_prereq
+	chmod +x /tmp/build/asterisk/contrib/scripts/install_prereq
+	sh contrib/scripts/install_prereq install >> /tmp/build.log 2>&1
 	./configure --with-crypto --with-ssl --with-pjproject-bundled --with-resample --libdir=/usr/lib/x86_64-linux-gnu >> /tmp/build.log 2>&1
 	make menuselect.makeopts >> /tmp/build.log 2>&1
 	/tmp/build/menuselect.sh >> /tmp/build.log 2>&1
