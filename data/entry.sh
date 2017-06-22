@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 function update_ownership(){
 	chown -R ${ASTERISK_USER}:${ASTERISK_GROUP} /var/lib/asterisk
 	chown -R ${ASTERISK_USER}:${ASTERISK_GROUP} /var/log/asterisk
