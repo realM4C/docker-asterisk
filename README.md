@@ -1,9 +1,9 @@
-# docker-asterisk14
+# docker-asterisk13
 Asterisk on AlpineLinux without dahdi
 
-[![](https://images.microbadger.com/badges/image/amssn/asterisk14.svg)](https://microbadger.com/images/amssn/asterisk14 "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/amssn/asterisk:asterisk13-deb.svg)](https://microbadger.com/images/amssn/asterisk:asterisk13-deb "Get your own image badge on microbadger.com")
 
-[![](https://images.microbadger.com/badges/version/amssn/asterisk14.svg)](https://microbadger.com/images/amssn/asterisk14 "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/amssn/asterisk:asterisk13-deb.svg)](https://microbadger.com/images/amssn/asterisk:asterisk13-deb "Get your own version badge on microbadger.com")
 
 # Usage:
 docker run -d --restart=always --name=asterisk --publish=5060:5060/udp --publish=5060:5060/tcp \ 
