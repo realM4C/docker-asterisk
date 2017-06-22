@@ -27,6 +27,8 @@ function __set_env(){
 function __init(){
 	echo "#################################################################"
 	echo "# Installing Depencies....                                      #"
+	echo "#################################################################" >> /tmp/build.log 2>&1
+	echo "# Installing Depencies....                                      #" >> /tmp/build.log 2>&1
 	apt-get update ${PKGP} >> /tmp/build.log 2>&1
 	apt-get upgrade ${PKGP} >> /tmp/build.log 2>&1
 	apt-get install ${PKGP} ${PKG_RUN} ${PKG_SERVICE} ${PKG_DEV} ${PKG_LIBS} ${PKG_BUILD} >> /tmp/build.log 2>&1
@@ -40,9 +42,9 @@ function __download(){
 	if [ "x${ASTERISK_EXTRA_PJSIP}" != "xno" ]; then
 		echo "# Downloading PJSIP in Version ${ASTERISK_EXTRA_PJSIP}..."
 		echo "########  PJSIP  ########" >> /tmp/build.log 2>&1
-		wget -nv -O pjproject.tar.bz2 http://www.pjsip.org/release/${ASTERISK_EXTRA_PJSIP}/pjproject-${ASTERISK_EXTRA_PJSIP}.tar.bz2 >> /tmp/build.log 2>&1
-		mkdir -p pjproject >> /tmp/build.log 2>&1
-		tar xjvf pjproject.tar.bz2 -C ./pjproject --strip-components=1 >> /tmp/build.log 2>&1
+		wget -nv -O /tmp/build/pjproject.tar.bz2 http://www.pjsip.org/release/${ASTERISK_EXTRA_PJSIP}/pjproject-${ASTERISK_EXTRA_PJSIP}.tar.bz2 >> /tmp/build.log 2>&1
+		mkdir -p /tmp/build/pjproject >> /tmp/build.log 2>&1
+		tar xjvf /tmp/build/pjproject.tar.bz2 -C /tmp/build/pjproject --strip-components=1 >> /tmp/build.log 2>&1
 		rm pjproject.tar.bz2 >> /tmp/build.log 2>&1
 	fi
 	if [ "x${ASTERISK_EXTRA_OPUS}" != "xno" ]; then
