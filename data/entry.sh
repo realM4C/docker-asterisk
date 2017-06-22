@@ -16,10 +16,11 @@ function update_ownership(){
 	#chmod -R u=rw,g=r,o= /etc/asterisk
 }
 echo -n "$(date): "
-update_ownership
+#update_ownership
 if [ "x${1}" = "x" ]; then
 	# This works if CMD is empty or not specified in Dockerfile
-	exec /usr/sbin/asterisk -vvvdddfcTin -U ${ASTERISK_USER} -G ${ASTERISK_GROUP}
+	#exec /usr/sbin/asterisk -vvvdddfcTin -U ${ASTERISK_USER} -G ${ASTERISK_GROUP}
+	exec /usr/sbin/asterisk -vvvdddfcTin
 else
 	exec $@
 fi
