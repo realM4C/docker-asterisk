@@ -1,5 +1,5 @@
 # docker-asterisk13
-Asterisk on AlpineLinux without dahdi
+Asterisk on Debian with freepbx gui without dahdi
 
 [![](https://images.microbadger.com/badges/image/amssn/asterisk:asterisk13-deb.svg)](https://microbadger.com/images/amssn/asterisk:asterisk13-deb "Get your own image badge on microbadger.com")
 
@@ -7,7 +7,7 @@ Asterisk on AlpineLinux without dahdi
 
 # Usage:
 docker run -d --restart=always --name=asterisk --publish=5060:5060/udp --publish=5060:5060/tcp \ 
---volume=[to-your-config-direcotry]:/etc/asterisk/ amssn/asterisk14:latest
+--volume=[to-your-config-direcotry]:/etc/asterisk/ amssn/asterisk:asterisk13-deb
 
 You can use:
 docker exec -it [name-of-asterisk-container] /usr/sbin/rasterisk
