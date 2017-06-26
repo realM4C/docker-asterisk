@@ -24,7 +24,8 @@ to connect to the CLI of Asterisk
 - ASTERISK_EXTRA_LANG='de'
 - ASTERISK_EXTRA_PJSIP='no'
 - ASTERISK_EXTRA_OPUS='1.1.4'
-- ASTERISK_INST_GUI='no'
+- ASTERISK_INST_GUI='13.0-latest'
+- ASTERISK_INT_DB='yes'
 
 # Ports:
 - 5060/tcp        # xxx
