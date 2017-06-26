@@ -10,7 +10,8 @@ function __set_env(){
 	if [ "x" = "x${ASTERISK_EXTRA_LANG}" ]	; then ASTERISK_EXTRA_LANG="de"		; fi
 	if [ "x" = "x${ASTERISK_EXTRA_PJSIP}" ]	; then ASTERISK_EXTRA_PJSIP="no"	; fi
 	if [ "x" = "x${ASTERISK_EXTRA_OPUS}" ]	; then ASTERISK_EXTRA_OPUS="1.1.4"	; fi
-	if [ "x" = "x${ASTERISK_INST_GUI}" ]	; then ASTERISK_INST_GUI="no"		; fi
+	if [ "x" = "x${ASTERISK_INST_GUI}" ]	; then ASTERISK_INST_GUI="13.0-latest"	; fi
+	if [ "x" = "x${ASTERISK_INT_DB}" ]	; then ASTERISK_INT_DB="no"		; fi
 	DEBIAN_FRONTEND=noninteractive
 	CORES="$(( $(cat /proc/cpuinfo | grep processor | tail -n1 | awk '{print $3}') + 1 ))"
 	MEM="$(cat /proc/meminfo | grep MemTotal | awk '{print $2}') kB"
@@ -22,6 +23,8 @@ function __set_env(){
 	PKG_LIBS_UNUSED="libbluetooth3 libpq5 libsybdb5 libasound2 libx11-6 libjack0"
 	PKG_BUILD="wget subversion git ca-certificates build-essential pkg-config autoconf automake gtk2.0 xmlstarlet aptitude doxygen unzip"
 	PKG_RUN="openssl sqlite3 fail2ban iptables"
+	PKG_GUI=" apache2 bison php5 php5-curl php5-cli php5-mysql php-pear php5-gd sox libmyodbc"
+	PKG_INT_DB="mariadb-server"
 	echo ""
 }
 function __init(){
@@ -32,13 +35,31 @@ function __init(){
 	apt-get update ${PKGP} >> /tmp/build.log 2>&1
 	apt-get upgrade ${PKGP} >> /tmp/build.log 2>&1
 	apt-get install ${PKGP} ${PKG_RUN} ${PKG_SERVICE} ${PKG_DEV} ${PKG_LIBS} ${PKG_BUILD} >> /tmp/build.log 2>&1
+	if [ "x${ASTERISK_INST_GUI}" != "no" ]; then
+		apt-get install ${PKG_GUI} >> /tmp/build.log 2>&1
+		pear install Console_Getopt >> /tmp/build.log 2>&1
+		rm -rf /var/www/html >> /tmp/build.log 2>&1
+	fi
+	if [ "x${ASTERISK_INT_DB}" != "no" ]; then
+		apt-get install ${PKG_INT_DB} >> /tmp/build.log 2>&1
+	fi
 	cp /usr/share/zoneinfo/${ASTERISK_TZ} /etc/localtime >> /tmp/build.log 2>&1
+	addgroup --gid ${ASTERISK_GID} ${ASTERISK_GROUP} >> /tmp/build.log 2>&1
+	useradd -s /bin/false -d /var/lib/asterisk -g ${ASTERISK_GID} -M -u ${ASTERISK_UID} ${ASTERISK_USER} >> /tmp/build.log 2>&1
 	echo ""
 }
 function __download(){
 	echo "#################################################################"
 	echo "# Download everything....                                       #"
 	cd /tmp/build/
+	if [ "x${ASTERISK_INST_GUI}" != "xno" ]; then
+		echo "# Downloading FREEPBX in Version ${ASTERISK_INST_GUI}..."
+		echo "########  FREEPBX  ########" >> /tmp/build.log 2>&1
+		wget -nv -O freepbx.tgz http://mirror.freepbx.org/modules/packages/freepbx/freepbx-${ASTERISK_INST_GUI}.tgz >> /tmp/build.log 2>&1
+		mkdir -p /tmp/build/freepbx >> /tmp/build.log 2>&1
+		tar vxfz freepbx.tgz -C ./freepbx --strip-components=1 >> /tmp/build.log 2>&1
+		rm freepbx.tgz >> /tmp/build.log 2>&1
+	fi
 	if [ "x${ASTERISK_EXTRA_PJSIP}" != "xno" ]; then
 		echo "# Downloading PJSIP in Version ${ASTERISK_EXTRA_PJSIP}..."
 		echo "########  PJSIP  ########" >> /tmp/build.log 2>&1
@@ -84,6 +105,25 @@ function __build(){
 		make check >> /tmp/build.log 2>&1
 	fi
 	cd /tmp/build/
+	cat >> /etc/odbcinst.ini << EOF
+[MySQL]
+Description = ODBC for MySQL
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
+Setup = /usr/lib/x86_64-linux-gnu/odbc/libodbcmyS.so
+FileUsage = 1
+  
+EOF
+	cat >> /etc/odbc.ini << EOF
+[MySQL-asteriskcdrdb]
+Description=MySQL connection to 'asteriskcdrdb' database
+driver=MySQL
+server=localhost
+database=asteriskcdrdb
+Port=3306
+Socket=/var/run/mysqld/mysqld.sock
+option=3
+  
+EOF
 	echo "# Building ASTERISK in Version ${ASTERISK_VER}..."
 	echo "########  ASTERISK  ########" >> /tmp/build.log 2>&1
 	cd asterisk
@@ -105,7 +145,22 @@ function __build(){
 	if [ "x${ASTERISK_DEVEL}" = "yes" ]; then
 		make progdocs >> /tmp/build.log 2>&1
 	fi
+	sed -i 's/\[directories\](\!)/\[directories\]/g' /etc/asterisk/asterisk.conf
 	touch /var/log/auth.log /var/log/asterisk/messages /var/log/asterisk/security /var/log/asterisk/cdr-csv >> /tmp/build.log 2>&1
+	if [ "x${ASTERISK_INST_GUI}" != "xno" ]; then
+		echo "# Building FREEPBX in Version ${ASTERISK_EXTRA_OPUS}..."
+		echo "########  FREEPBX  ########" >> /tmp/build.log 2>&1
+		cd freepbx
+		sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php5/apache2/php.ini >> /tmp/build.log 2>&1
+		cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf_orig >> /tmp/build.log 2>&1
+		sed -i "s/^\(User\).*/\1 ${ASTERISK_USER}/" /etc/apache2/apache2.conf >> /tmp/build.log 2>&1
+		sed -i "s/^\(Group\).*/\1 ${ASTERISK_GROUP}/" /etc/apache2/apache2.conf >> /tmp/build.log 2>&1
+		sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf >> /tmp/build.log 2>&1
+		service apache2 restart >> /tmp/build.log 2>&1
+		./start_asterisk start >> /tmp/build.log 2>&1
+		./install -n >> /tmp/build.log 2>&1
+		./start_asterisk stop >> /tmp/build.log 2>&1
+	fi
 	echo ""
 }
 function __i18n(){
