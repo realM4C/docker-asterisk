@@ -147,6 +147,7 @@ EOF
 	fi
 	sed -i 's/\[directories\](\!)/\[directories\]/g' /etc/asterisk/asterisk.conf
 	touch /var/log/auth.log /var/log/asterisk/messages /var/log/asterisk/security /var/log/asterisk/cdr-csv >> /tmp/build.log 2>&1
+	cd /tmp/build/
 	if [ "x${ASTERISK_INST_GUI}" != "xno" ]; then
 		echo "# Building FREEPBX in Version ${ASTERISK_EXTRA_OPUS}..."
 		echo "########  FREEPBX  ########" >> /tmp/build.log 2>&1
