@@ -36,12 +36,12 @@ function __init(){
 	apt-get upgrade ${PKGP} >> /tmp/build.log 2>&1
 	apt-get install ${PKGP} ${PKG_RUN} ${PKG_SERVICE} ${PKG_DEV} ${PKG_LIBS} ${PKG_BUILD} >> /tmp/build.log 2>&1
 	if [ "x${ASTERISK_INST_GUI}" != "no" ]; then
-		apt-get install ${PKG_GUI} >> /tmp/build.log 2>&1
+		apt-get install ${PKGP} ${PKG_GUI} >> /tmp/build.log 2>&1
 		pear install Console_Getopt >> /tmp/build.log 2>&1
 		rm -rf /var/www/html >> /tmp/build.log 2>&1
 	fi
 	if [ "x${ASTERISK_INT_DB}" != "no" ]; then
-		apt-get install ${PKG_INT_DB} >> /tmp/build.log 2>&1
+		apt-get install ${PKGP} ${PKG_INT_DB} >> /tmp/build.log 2>&1
 	fi
 	cp /usr/share/zoneinfo/${ASTERISK_TZ} /etc/localtime >> /tmp/build.log 2>&1
 	addgroup --gid ${ASTERISK_GID} ${ASTERISK_GROUP} >> /tmp/build.log 2>&1
