@@ -1,3 +1,6 @@
+WARNING THIS DOCKER CONTAINER IS DEPRACED
+
+
 # docker-asterisk13
 Asterisk on Debian with freepbx gui without dahdi
 
