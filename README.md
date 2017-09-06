@@ -1,3 +1,5 @@
+WARNING THIS DOCKER CONTAINER IS DEPRACED
+
 # docker-asterisk14
 Asterisk on AlpineLinux without dahdi
 
